@@ -1,3 +1,4 @@
+#DECK = %w[D1 D2 D3 D4]
 
 SUIT = %w[Hearts Diamonds Clubs Spades]
 
@@ -13,7 +14,7 @@ CARD_VALUE = {"Two" => 2,
               "Jack" => 10,
               "Queen" => 10,
               "King" => 10,
-              "Ace" => 11}
+              "Ace" => 11} 
 
 def create_new_deck
 deck = {}
@@ -28,13 +29,13 @@ end
 def display_cards(deck,who)
   if who == "computer"
     hand = deck.each_key.to_a
-    puts "Computer's hand is #{hand}"
+    puts "The Computer's hand is #{hand}"
   elsif who == "first"
     hand = deck.each_key.to_a
-    puts "Your first card is #{hand}"
-  else  
+    puts "#{$name} your first card is #{hand}"
+  else
     hand = deck.each_key.to_a
-    puts "Your hand is #{hand}"
+    puts "#{$name} your hand is #{hand}"
   end
 end
 
@@ -42,7 +43,8 @@ def deal_cards(deck)
     item = $current_deck.keys.to_a.sample
     deck.store("#{item.to_s}", $current_deck[item.to_s])
       if item.include?("Ace")
-        puts "Would you like to play the Ace as a 1 or 11?"
+        display_cards(deck,"player")
+        puts "#{$name} would you like to play the Ace as a 1 or an 11?"
         ask = gets.chomp
         if ask == '1'
           deck.each {|k,v| deck["#{item.to_s}"] = 1}
@@ -62,7 +64,7 @@ end
 def play_hand(deck)
   begin
   display_cards(deck,"player")
-  puts "Do you want to hit or stay (h,s)?"
+  puts "#{$name}, do you want to hit or stay (h,s)?"
   input = gets.chomp
     if input == "h"
       deal_cards(deck)
@@ -78,11 +80,10 @@ end
 
 def computer_play_hand(deck)
   begin
-    computer = 'play'
     computer_hand_total = deck.values.to_a.reduce(:+)
     case 
     when computer_hand_total > 21
-      computer = 'done'
+      break
     when computer_hand_total < 21 && computer_hand_total > 15
       computer = 'done'
     when computer_hand_total < 16
@@ -99,33 +100,34 @@ def winner_check(player,computer)
   case
   when player_hand_total == 21
     display_cards(player,"player")
-    puts "Blackjack!!!! Winner!!!!"
+    puts "#{$name} you got a Blackjack, winner!!!!"
   when player_hand_total > 21
     display_cards(player,"player")
-    puts "Your hand Total is #{player_hand_total}. You busted you lose!"
+    puts "#{$name} your hand total is #{player_hand_total}." 
+    puts "You busted, you lose!"
   when computer_hand_total > 21
     display_cards(player,"player")
-    puts "#{computer} The computer's total is #{computer_hand_total}."
-    puts "Computer busted you win!"
+    puts "The computer's hand is #{computer} for a total of #{computer_hand_total}."
+    puts "The computer busted. #{$name} wins!"
   when computer_hand_total == player_hand_total
     display_cards(player,"player")
-    puts "Your hand Total is #{player_hand_total}"
+    puts "#{$name}'s total is #{player_hand_total}"
     puts "---------------"
     display_cards(computer,"computer")
-    puts "Computer's Total is #{computer_hand_total}"
-    puts "It's a tie!"
+    puts "The computer's total is #{computer_hand_total}"
+    puts "It's a push!"
   when computer_hand_total > player_hand_total
     display_cards(player,"player")
-    puts "Your hand Total is #{player_hand_total}"
+    puts "#{$name}'s total is #{player_hand_total}"
     puts "---------------"
     display_cards(computer,"computer")
-    puts "Computer's Total is #{computer_hand_total}, Computer Wins!"
+    puts "The computer's total is #{computer_hand_total}, Computer Wins!"
   when computer_hand_total < player_hand_total
     display_cards(player,"player")
-    puts "Your hand Total is #{player_hand_total}"
+    puts "#{$name}'s total is #{player_hand_total}"
     puts "---------------"
     display_cards(computer,"computer")
-    puts "Computer's Total is #{computer_hand_total}, You Win!"
+    puts "The computer's total is #{computer_hand_total}, #{$name} wins!!!"
   end
 end
 
@@ -133,6 +135,8 @@ $current_deck = {}
 $current_deck = create_new_deck
 
 puts "Welcome to Blackjack!"
+puts "May I have your name please?"
+$name = gets.chomp
 
 begin
   end_game = 'false'
@@ -160,6 +164,6 @@ begin
   end
 end until end_game == "true"
 
-puts "Thanks for playing!"
+puts "#{$name}, thanks for playing!"
 
 
